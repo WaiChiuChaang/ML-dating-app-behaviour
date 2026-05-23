@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,7 +8,8 @@
     <!-- Modern Premium Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <!-- Chart.js from CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -44,7 +46,7 @@
             min-height: 100vh;
             display: flex;
             overflow-x: hidden;
-            background-image: 
+            background-image:
                 radial-gradient(circle at 10% 20%, rgba(255, 46, 147, 0.08) 0%, transparent 40%),
                 radial-gradient(circle at 90% 80%, rgba(138, 43, 226, 0.08) 0%, transparent 40%);
             background-attachment: fixed;
@@ -78,8 +80,15 @@
         }
 
         @keyframes pulse {
-            0% { transform: scale(1); filter: drop-shadow(0 0 8px var(--primary-glow)); }
-            100% { transform: scale(1.08); filter: drop-shadow(0 0 15px var(--primary)); }
+            0% {
+                transform: scale(1);
+                filter: drop-shadow(0 0 8px var(--primary-glow));
+            }
+
+            100% {
+                transform: scale(1.08);
+                filter: drop-shadow(0 0 15px var(--primary));
+            }
         }
 
         .logo-title {
@@ -172,6 +181,7 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.03);
             padding-bottom: 3px;
         }
+
         .group-card li:last-child {
             border-bottom: none;
             padding-bottom: 0;
@@ -305,8 +315,14 @@
             align-items: center;
             gap: 4px;
         }
-        .trend-up { color: var(--neon-green); }
-        .trend-neutral { color: var(--neon-blue); }
+
+        .trend-up {
+            color: var(--neon-green);
+        }
+
+        .trend-neutral {
+            color: var(--neon-blue);
+        }
 
         .metric-icon {
             font-size: 2.2rem;
@@ -393,7 +409,8 @@
             transition: all 0.3s ease;
         }
 
-        .filter-select:hover, .filter-select:focus {
+        .filter-select:hover,
+        .filter-select:focus {
             border-color: var(--primary);
             box-shadow: 0 0 8px rgba(255, 46, 147, 0.2);
         }
@@ -409,8 +426,15 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(8px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* Model Arena Specifics */
@@ -636,8 +660,15 @@
         }
 
         @keyframes pulse-slow {
-            0% { transform: scale(1); filter: drop-shadow(0 0 5px rgba(255, 46, 147, 0.3)); }
-            100% { transform: scale(1.06); filter: drop-shadow(0 0 20px rgba(255, 46, 147, 0.6)); }
+            0% {
+                transform: scale(1);
+                filter: drop-shadow(0 0 5px rgba(255, 46, 147, 0.3));
+            }
+
+            100% {
+                transform: scale(1.06);
+                filter: drop-shadow(0 0 20px rgba(255, 46, 147, 0.6));
+            }
         }
 
         .result-percentage {
@@ -718,9 +749,11 @@
             .chart-grid-main {
                 grid-template-columns: 1fr;
             }
+
             .chart-grid-secondary {
                 grid-template-columns: 1fr 1fr;
             }
+
             .forecaster-layout {
                 grid-template-columns: 1fr;
             }
@@ -730,6 +763,7 @@
             body {
                 flex-direction: column;
             }
+
             aside {
                 width: 100%;
                 position: relative;
@@ -737,11 +771,13 @@
                 border-bottom: 1px solid rgba(255, 46, 147, 0.15);
                 padding: 20px;
             }
+
             main {
                 margin-left: 0;
                 width: 100%;
                 padding: 20px;
             }
+
             .logo-area {
                 margin-bottom: 20px;
                 display: flex;
@@ -749,34 +785,51 @@
                 gap: 15px;
                 text-align: left;
             }
-            .logo-icon { font-size: 2rem; }
-            .logo-title { margin-top: 0; font-size: 1.1rem; }
+
+            .logo-icon {
+                font-size: 2rem;
+            }
+
+            .logo-title {
+                margin-top: 0;
+                font-size: 1.1rem;
+            }
+
             nav {
                 flex-direction: row;
                 overflow-x: auto;
                 padding-bottom: 5px;
                 flex-grow: 0;
             }
+
             .nav-link {
                 padding: 10px 14px;
                 font-size: 0.8rem;
             }
-            .group-card { display: none; }
+
+            .group-card {
+                display: none;
+            }
+
             .chart-grid-secondary {
                 grid-template-columns: 1fr;
             }
+
             .model-grid {
                 grid-template-columns: 1fr;
             }
+
             .form-grid {
                 grid-template-columns: 1fr;
             }
+
             .form-group.full-width {
                 grid-column: span 1;
             }
         }
     </style>
 </head>
+
 <body>
 
     <!-- Sidebar Navigation -->
@@ -820,7 +873,8 @@
         <header>
             <div class="header-left">
                 <h1 id="page-title">Behavioral Insights Hub</h1>
-                <p id="page-subtitle">Exploratory Data Analysis (EDA) of the Synthetic Dating App User Behavior dataset (50k records).</p>
+                <p id="page-subtitle">Exploratory Data Analysis (EDA) of the Synthetic Dating App User Behavior dataset
+                    (50k records).</p>
             </div>
             <div class="header-badge">UM Assignment Mockup</div>
         </header>
@@ -962,7 +1016,8 @@
                     <div class="card-header-bar">
                         <div>
                             <h3 class="card-title">Model Performance Arena (Classification)</h3>
-                            <p class="card-subtitle">Comparing accuracy, precision, recall, and F1 across the 5 project models</p>
+                            <p class="card-subtitle">Comparing accuracy, precision, recall, and F1 across the 5 project
+                                models</p>
                         </div>
                     </div>
                     <div class="chart-container" style="height: 380px;">
@@ -975,7 +1030,7 @@
                     <div>
                         <h3 class="card-title" id="active-model-title">Random Forest Classifier</h3>
                         <p class="card-subtitle">Ensemble bagging forest using 100 tree estimators.</p>
-                        
+
                         <div class="metric-badges">
                             <div class="badge-card">
                                 <div class="badge-title">Test Accuracy</div>
@@ -988,23 +1043,25 @@
                         </div>
 
                         <!-- Mini Confusion Matrix Visualizer -->
-                        <h4 style="margin-top: 25px; font-size: 0.85rem; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.5px;">Confusion Matrix Highlight</h4>
+                        <h4
+                            style="margin-top: 25px; font-size: 0.85rem; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.5px;">
+                            Confusion Matrix Highlight</h4>
                         <div class="matrix-table" id="matrix-container">
                             <div class="matrix-cell diagonal">924 <span class="cell-lbl">Match</span></div>
                             <div class="matrix-cell">42 <span class="cell-lbl">Ghosted</span></div>
                             <div class="matrix-cell">21 <span class="cell-lbl">Blocked</span></div>
                             <div class="matrix-cell">13 <span class="cell-lbl">Catfish</span></div>
-                            
+
                             <div class="matrix-cell">38 <span class="cell-lbl">Match</span></div>
                             <div class="matrix-cell diagonal">886 <span class="cell-lbl">Ghosted</span></div>
                             <div class="matrix-cell">56 <span class="cell-lbl">Blocked</span></div>
                             <div class="matrix-cell">20 <span class="cell-lbl">Catfish</span></div>
-                            
+
                             <div class="matrix-cell">15 <span class="cell-lbl">Match</span></div>
                             <div class="matrix-cell">62 <span class="cell-lbl">Ghosted</span></div>
                             <div class="matrix-cell diagonal">898 <span class="cell-lbl">Blocked</span></div>
                             <div class="matrix-cell">25 <span class="cell-lbl">Catfish</span></div>
-                            
+
                             <div class="matrix-cell">11 <span class="cell-lbl">Match</span></div>
                             <div class="matrix-cell">18 <span class="cell-lbl">Ghosted</span></div>
                             <div class="matrix-cell">34 <span class="cell-lbl">Blocked</span></div>
@@ -1013,8 +1070,11 @@
                     </div>
 
                     <!-- AutoML Note -->
-                    <div style="background: rgba(0, 240, 255, 0.05); border: 1px dashed rgba(0, 240, 255, 0.2); border-radius: 10px; padding: 12px; font-size: 0.76rem; color: #00f0ff; line-height: 1.4; margin-top: 20px;">
-                        <strong>🤖 Auto-Sklearn Baseline Comparison:</strong> Our Random Forest matches Auto-Sklearn's optimized search space accuracy within 0.8% error, while providing a 15x faster evaluation response loop in runtime!
+                    <div
+                        style="background: rgba(0, 240, 255, 0.05); border: 1px dashed rgba(0, 240, 255, 0.2); border-radius: 10px; padding: 12px; font-size: 0.76rem; color: #00f0ff; line-height: 1.4; margin-top: 20px;">
+                        <strong>🤖 Auto-Sklearn Baseline Comparison:</strong> Our Random Forest matches Auto-Sklearn's
+                        optimized search space accuracy within 0.8% error, while providing a 15x faster evaluation
+                        response loop in runtime!
                     </div>
                 </div>
             </div>
@@ -1026,14 +1086,15 @@
                 <!-- User input sliders -->
                 <div class="glass-card">
                     <h3 class="card-title" style="margin-bottom: 20px;">User Behavior Parameters</h3>
-                    
+
                     <form id="forecaster-form" onsubmit="event.preventDefault(); triggerPrediction();">
                         <div class="form-grid">
                             <div class="form-group">
                                 <label>Gender
                                     <span class="val-bubble" id="val-gender">Male</span>
                                 </label>
-                                <select class="form-input" id="inp-gender" onchange="document.getElementById('val-gender').innerText = this.options[this.selectedIndex].text;">
+                                <select class="form-input" id="inp-gender"
+                                    onchange="document.getElementById('val-gender').innerText = this.options[this.selectedIndex].text;">
                                     <option value="Male">Male</option>
                                     <option value="Female">Female</option>
                                     <option value="Non-binary">Non-binary</option>
@@ -1044,7 +1105,8 @@
                                 <label>Location Type
                                     <span class="val-bubble" id="val-location">Urban</span>
                                 </label>
-                                <select class="form-input" id="inp-location" onchange="document.getElementById('val-location').innerText = this.options[this.selectedIndex].text;">
+                                <select class="form-input" id="inp-location"
+                                    onchange="document.getElementById('val-location').innerText = this.options[this.selectedIndex].text;">
                                     <option value="Urban">Urban</option>
                                     <option value="Suburban">Suburban</option>
                                     <option value="Rural">Rural</option>
@@ -1055,43 +1117,50 @@
                                 <label>App Usage Duration
                                     <span class="val-bubble"><span id="val-usage">120</span> min/day</span>
                                 </label>
-                                <input type="range" class="form-range" id="inp-usage" min="5" max="300" value="120" oninput="document.getElementById('val-usage').innerText = this.value;">
+                                <input type="range" class="form-range" id="inp-usage" min="5" max="300" value="120"
+                                    oninput="document.getElementById('val-usage').innerText = this.value;">
                             </div>
                             <div class="form-group">
                                 <label>Swipe Right Ratio
                                     <span class="val-bubble"><span id="val-swipe">45</span>%</span>
                                 </label>
-                                <input type="range" class="form-range" id="inp-swipe" min="0" max="100" value="45" oninput="document.getElementById('val-swipe').innerText = this.value;">
+                                <input type="range" class="form-range" id="inp-swipe" min="0" max="100" value="45"
+                                    oninput="document.getElementById('val-swipe').innerText = this.value;">
                             </div>
                             <div class="form-group">
                                 <label>Profile Photos
                                     <span class="val-bubble"><span id="val-photos">4</span> pics</span>
                                 </label>
-                                <input type="range" class="form-range" id="inp-photos" min="0" max="6" value="4" oninput="document.getElementById('val-photos').innerText = this.value;">
+                                <input type="range" class="form-range" id="inp-photos" min="0" max="6" value="4"
+                                    oninput="document.getElementById('val-photos').innerText = this.value;">
                             </div>
                             <div class="form-group">
                                 <label>Bio Character Length
                                     <span class="val-bubble"><span id="val-bio">150</span> chars</span>
                                 </label>
-                                <input type="range" class="form-range" id="inp-bio" min="0" max="500" value="150" oninput="document.getElementById('val-bio').innerText = this.value;">
+                                <input type="range" class="form-range" id="inp-bio" min="0" max="500" value="150"
+                                    oninput="document.getElementById('val-bio').innerText = this.value;">
                             </div>
                             <div class="form-group">
                                 <label>Messages Sent Count
                                     <span class="val-bubble"><span id="val-messages">30</span> msg</span>
                                 </label>
-                                <input type="range" class="form-range" id="inp-messages" min="0" max="100" value="30" oninput="document.getElementById('val-messages').innerText = this.value;">
+                                <input type="range" class="form-range" id="inp-messages" min="0" max="100" value="30"
+                                    oninput="document.getElementById('val-messages').innerText = this.value;">
                             </div>
                             <div class="form-group">
                                 <label>Emoji Usage Rate
                                     <span class="val-bubble"><span id="val-emojis">20</span>%</span>
                                 </label>
-                                <input type="range" class="form-range" id="inp-emojis" min="0" max="95" value="20" oninput="document.getElementById('val-emojis').innerText = this.value;">
+                                <input type="range" class="form-range" id="inp-emojis" min="0" max="95" value="20"
+                                    oninput="document.getElementById('val-emojis').innerText = this.value;">
                             </div>
                             <div class="form-group full-width">
                                 <label>Active swiping hour of day
                                     <span class="val-bubble" id="val-hour">9:00 PM</span>
                                 </label>
-                                <input type="range" class="form-range" id="inp-hour" min="0" max="23" value="21" oninput="updateActiveHourBubble(this.value);">
+                                <input type="range" class="form-range" id="inp-hour" min="0" max="23" value="21"
+                                    oninput="updateActiveHourBubble(this.value);">
                             </div>
                         </div>
 
@@ -1103,12 +1172,12 @@
                 <div class="glass-card" style="display: flex; align-items: center; justify-content: center;">
                     <div class="results-panel">
                         <h3 class="card-title" style="margin-bottom: 20px;">Simulator Forecast</h3>
-                        
+
                         <div class="heart-container">
                             <!-- Glowing background heart svg -->
                             <svg class="heart-svg" viewBox="0 0 32 29.6">
                                 <path d="M23.6,0c-3.4,0-6.3,2.7-7.6,5.6C14.7,2.7,11.8,0,8.4,0C3.8,0,0,3.8,0,8.4c0,9.4,9.5,11.9,16,21.2
-                                c6.1-9.3,16-12.1,16-21.2C32,3.8,28.2,0,23.6,0z"/>
+                                c6.1-9.3,16-12.1,16-21.2C32,3.8,28.2,0,23.6,0z" />
                             </svg>
                             <div class="result-percentage"><span id="res-score">82</span>%</div>
                         </div>
@@ -1117,7 +1186,8 @@
                             <div class="prediction-title">Predicted Connection Outcome</div>
                             <div class="prediction-outcome" id="res-outcome">Mutual Match</div>
                             <div class="prediction-desc" id="res-desc">
-                                Healthy balanced profiles with descriptive bios and solid photo counts have an extremely high likelihood of generating reciprocal interest!
+                                Healthy balanced profiles with descriptive bios and solid photo counts have an extremely
+                                high likelihood of generating reciprocal interest!
                             </div>
                         </div>
                     </div>
@@ -1144,7 +1214,7 @@
             // Remove active classes
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
             document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
-            
+
             // Add active class to selected tab content
             document.getElementById(tabId).classList.add('active');
 
@@ -1510,7 +1580,7 @@
         function selectModel(modelKey) {
             // Remove active classes
             document.querySelectorAll('.model-tab-btn').forEach(btn => btn.classList.remove('active'));
-            
+
             // Add active to selected
             const clickedBtn = Array.from(document.querySelectorAll('.model-tab-btn')).find(btn => btn.getAttribute('onclick').includes(modelKey));
             if (clickedBtn) clickedBtn.classList.add('active');
@@ -1524,7 +1594,7 @@
             // Render matching Confusion Matrix
             const container = document.getElementById('matrix-container');
             container.innerHTML = '';
-            
+
             data.matrix.forEach((cell, idx) => {
                 const isDiag = (idx === 0 || idx === 5 || idx === 10 || idx === 15);
                 const cellDiv = document.createElement('div');
@@ -1553,7 +1623,7 @@
             let desc = "";
 
             // Attractiveness Scoring Logic (mimicking Decision Trees weights)
-            
+
             // Photos impact
             if (photos === 0) score -= 30; // Massive penalty for empty profiles
             else if (photos >= 4) score += 15;
@@ -1626,4 +1696,5 @@
         }
     </script>
 </body>
+
 </html>

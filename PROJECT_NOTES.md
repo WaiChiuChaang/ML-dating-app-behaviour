@@ -25,7 +25,7 @@
 
 | File | Description |
 |---|---|
-| `ML_dating_app_behaviour.ipynb` | Main Jupyter notebook — full pipeline |
+| `ML_dating_app_behaviour.ipynb` | Main Jupyter notebook — full pipeline (105 cells) |
 | `dating_app_behavior_dataset.csv` | Original dataset (50k × 19 features, 7.6 MB) |
 | `dating_app_behavior_dataset_extended1.csv` | **Extended dataset used** (50k × 25 features, 9.6 MB) |
 | `PROJECT_NOTES.md` | This documentation file |
@@ -274,7 +274,7 @@ X_train, X_test, y_train, y_test = train_test_split(
 )
 ```
 
-**Why stratify?**  
+**Why stratify?**
 Without `stratify=y`, a random split might put more Positive examples in train than test, making evaluation unreliable. Stratification ensures both splits have the same ~39.7% / 60.3% ratio.
 
 **Result:**
@@ -284,55 +284,242 @@ Without `stratify=y`, a random split might put more Positive examples in train t
 | Training | 40,000 | ~15,880 (39.7%) | ~24,120 (60.3%) |
 | Test | 10,000 | ~3,970 (39.7%) | ~6,030 (60.3%) |
 
-**Available objects for model training:**
-```python
-X_train, X_test, y_train, y_test      # original 67 features
-X_train_pca, X_test_pca               # PCA-reduced 55 components
-RANDOM_STATE = 42                       # use in all models
-```
+---
+
+### Step 7: Model Training (Section 9 in notebook)
+
+We train **6 different models** to compare their performance on the same data:
+
+| # | Model | Type | Why Selected | Key Parameters |
+|---|---|---|---|---|
+| 1 | **Logistic Regression** | Linear | Baseline, interpretable, fast | `max_iter=1000, solver='lbfgs'` |
+| 2 | **K-Nearest Neighbors** | Instance-based | Distance-based, non-parametric | `n_neighbors=5` |
+| 3 | **Decision Tree** | Tree-based | Fully interpretable | default |
+| 4 | **Random Forest** | Ensemble (Bagging) | Robust, handles high dims | `n_estimators=200` |
+| 5 | **XGBoost** | Ensemble (Boosting) | Usually best on tabular data | `n_estimators=200, eval_metric='logloss'` |
+| 6 | **SVM** | Kernel-based | Good with clear margins | `kernel='rbf', probability=True` |
+
+#### How each model works:
+
+**Logistic Regression:**
+Fits a linear decision boundary by learning weights for each feature. Output is a probability via the sigmoid function. Simple and interpretable — serves as a baseline to beat.
+
+**K-Nearest Neighbors (KNN):**
+Classifies a point by looking at its K nearest neighbours in feature space. No training phase — all computation happens at prediction time. Sensitive to feature scaling (which is why we StandardScaled).
+
+**Decision Tree:**
+Recursively splits the data on the feature that best separates the classes (using Gini impurity or entropy). Very interpretable but prone to overfitting if not pruned.
+
+**Random Forest:**
+Trains many decision trees on random subsets of the data and features, then aggregates their predictions (majority vote). Reduces overfitting compared to single trees. Provides feature importance scores.
+
+**XGBoost (Extreme Gradient Boosting):**
+Builds trees sequentially — each new tree corrects the errors of the previous ones. Uses gradient descent to minimize the loss function. Typically the strongest performer on structured/tabular data.
+
+**Support Vector Machine (SVM):**
+Finds the hyperplane that maximally separates the two classes. The `rbf` kernel maps data into a higher-dimensional space where linear separation is possible. `probability=True` enables probability estimates via Platt scaling.
+
+#### What we record for each model:
+- **Training accuracy** — how well it fits the training data
+- **Test accuracy** — how well it generalises to unseen data
+- **Precision** — of predicted positives, how many are actually positive
+- **Recall** — of actual positives, how many were correctly predicted
+- **F1 Score** — harmonic mean of precision and recall (balances both)
+- **ROC-AUC** — area under the ROC curve (1.0 = perfect, 0.5 = random)
+- **Training time** — wall clock time in seconds
+- **Overfitting gap** — (train accuracy - test accuracy); large gap = overfitting
+
+#### Evaluation visualisations produced:
+1. **Model comparison bar chart** — side-by-side comparison of accuracy, precision, recall, F1, ROC-AUC
+2. **Confusion matrices** — 2×2 heatmaps for each model (True/False × Positive/Negative)
+3. **ROC curves** — all 6 models overlaid on one plot with AUC values
+4. **Classification reports** — per-class precision, recall, F1 for each model
+5. **5-fold cross-validation boxplot** — shows stability of each model across different data splits
+6. **Learning curves** — training vs validation accuracy as training set size grows (top 3 models)
 
 ---
 
-## 🔜 What's Next — Model Training
+### Step 8: Hyperparameter Tuning (Section 10 in notebook)
 
-The following models are planned (minimum 5 required by assignment):
+**Goal:** Improve the top 3 models by searching for better hyperparameter combinations.
 
-| # | Model | Why Selected |
-|---|---|---|
-| 1 | **Logistic Regression** | Baseline linear model, interpretable, fast |
-| 2 | **K-Nearest Neighbors (KNN)** | Non-parametric, distance-based |
-| 3 | **Decision Tree** | Fully interpretable, no scaling needed |
-| 4 | **Random Forest** | Ensemble of trees, robust, handles high dims |
-| 5 | **XGBoost / Gradient Boosting** | Usually best performer on tabular data |
-| 6 | **Support Vector Machine (SVM)** | Good for medium-sized datasets |
+**Method:** `RandomizedSearchCV` with:
+- **30 random parameter combinations** per model
+- **5-fold cross-validation** per combination
+- **F1 score** as the optimisation metric (balances precision and recall)
+- Total: 30 × 5 = 150 model fits per model being tuned
 
-**Evaluation metrics to report:**
-- Accuracy, Precision, Recall, F1-score (macro & weighted)
-- ROC-AUC score
-- Confusion matrix
-- Learning curves (to detect overfitting)
+#### Parameter search spaces:
 
-**Hyperparameter tuning:**
-- `GridSearchCV` or `RandomizedSearchCV` for top 2–3 models
-- 5-fold cross-validation
+**Random Forest:**
+| Parameter | Values Searched |
+|---|---|
+| `n_estimators` | 100, 200, 300, 500 |
+| `max_depth` | None, 10, 20, 30, 50 |
+| `min_samples_split` | 2, 5, 10 |
+| `min_samples_leaf` | 1, 2, 4 |
+| `max_features` | 'sqrt', 'log2', None |
 
-**Auto-sklearn comparison:**
-- Must be run in Google Colab (Linux-only dependency)
-- 120-second budget for autoML search
+**XGBoost:**
+| Parameter | Values Searched |
+|---|---|
+| `n_estimators` | 100, 200, 300, 500 |
+| `max_depth` | 3, 5, 7, 10 |
+| `learning_rate` | 0.01, 0.05, 0.1, 0.2 |
+| `subsample` | 0.6, 0.8, 1.0 |
+| `colsample_bytree` | 0.6, 0.8, 1.0 |
+| `min_child_weight` | 1, 3, 5 |
+
+**SVM:**
+| Parameter | Values Searched |
+|---|---|
+| `C` | 0.1, 1, 10, 100 |
+| `gamma` | 'scale', 'auto', 0.01, 0.001 |
+| `kernel` | 'rbf', 'poly' |
+
+**KNN:**
+| Parameter | Values Searched |
+|---|---|
+| `n_neighbors` | 3, 5, 7, 11, 15, 21 |
+| `weights` | 'uniform', 'distance' |
+| `metric` | 'euclidean', 'manhattan', 'minkowski' |
+
+**Decision Tree:**
+| Parameter | Values Searched |
+|---|---|
+| `max_depth` | None, 5, 10, 20, 30 |
+| `min_samples_split` | 2, 5, 10, 20 |
+| `min_samples_leaf` | 1, 2, 4, 8 |
+| `criterion` | 'gini', 'entropy' |
+
+**Logistic Regression:**
+| Parameter | Values Searched |
+|---|---|
+| `C` | 0.01, 0.1, 1, 10, 100 |
+| `penalty` | 'l2' |
+| `solver` | 'lbfgs', 'liblinear' |
+
+#### Tuning output:
+- **Best parameters** found for each model
+- **Before vs After comparison** — shows accuracy, F1, ROC-AUC change
+- **Bar chart** comparing baseline vs tuned for top 3 models
+- **Best overall model** selected by highest F1 score
+- **Confusion matrix and ROC curve** for the best tuned model
+
+---
+
+### Step 9: Feature Importance Analysis (Section 11 in notebook)
+
+Uses the best tree-based model (Random Forest or XGBoost) to extract feature importance scores:
+```python
+feat_imp = pd.DataFrame({
+    'feature': X_train.columns,
+    'importance': importance_model.feature_importances_
+}).sort_values('importance', ascending=False)
+```
+
+**What feature importance means:**
+- For Random Forest: average decrease in impurity (Gini) when splitting on that feature
+- For XGBoost: total gain from splits on that feature across all trees
+- Higher importance = that feature is more useful for distinguishing Positive from Negative outcomes
+
+**Output:** Top 20 features ranked by importance, with horizontal bar chart.
+
+---
+
+### Step 10: Final Summary (Section 12 in notebook)
+
+- **Comprehensive comparison table** of all baseline + tuned models, sorted by F1 score
+- **Final bar chart** ranking all models (green = tuned, grey = baseline)
+- **Best model selection** with detailed classification report
+
+---
+
+## 📊 Full Pipeline Diagram
+
+```
+dating_app_behavior_dataset_extended1.csv  (50,000 x 25)
+        |
+        v
+  [EDA]  ->  visualizations, distributions, correlations
+        |
+        v
+  [Drop] app_usage_time_label, swipe_right_label  ->  50,000 x 23
+        |
+        v
+  [Binary Target]  match_outcome  ->  target (0/1)
+        |
+        v
+  [Ordinal Encode]  income, education  ->  income_enc, education_enc
+        |
+        v
+  [One-Hot Encode]  7 nominal columns  ->  +43 binary columns
+        |
+        v
+  [Multi-Hot Encode]  interest_tags (49 tags)  ->  +49 binary columns
+        |
+        v
+  [StandardScaler]  12 numeric columns  ->  mean=0, std=1
+        |
+        v
+  Feature matrix X: (50,000 x 113)
+        |
+        |--[ANOVA F top 40]---+
+        |                     +--[Union]--> X_selected (50,000 x 67)
+        +--[MI top 40]--------+                  |
+                                                 |--[PCA 95%]--> X_pca (50,000 x 55)
+                                                 |
+                                                 v
+                                    [Train/Test Split 80/20 stratified]
+                                                 |
+                               +-----------------+------------------+
+                               v                                    v
+                        X_train (40k x 67)                  X_test (10k x 67)
+                               |
+                               v
+                    [Train 6 Baseline Models]
+                    1. Logistic Regression
+                    2. KNN
+                    3. Decision Tree
+                    4. Random Forest
+                    5. XGBoost
+                    6. SVM
+                               |
+                               v
+                    [Evaluate: Acc, F1, ROC-AUC, Confusion Matrix]
+                    [5-Fold Cross-Validation]
+                    [Learning Curves for Top 3]
+                               |
+                               v
+                    [Hyperparameter Tuning - Top 3 Models]
+                    RandomizedSearchCV (30 iter, 5-fold CV)
+                               |
+                               v
+                    [Final Comparison: Baseline vs Tuned]
+                    [Best Model Selection by F1 Score]
+                               |
+                               v
+                    [Feature Importance Analysis]
+```
 
 ---
 
 ## 🛠️ Technical Notes
 
-### Running in Google Colab
-1. Upload both CSV files to Google Drive under `MyDrive/Dataset/`
-2. In Section 2 (Data Loading), uncomment the Drive mount lines and comment out the local path
-3. Run all cells top to bottom — Section 1 installs all required packages
-
-### Running Locally
-1. Ensure CSV files are in the same directory as the notebook
+### Running Locally (Default Setup)
+1. Ensure the CSV files (e.g., `dating_app_behavior_dataset_extended1.csv`) are in the same directory as the notebook.
 2. Install dependencies: `pip install pandas numpy matplotlib seaborn scikit-learn xgboost imbalanced-learn`
-3. The local path `DATA_PATH = 'dating_app_behavior_dataset_extended1.csv'` is already set
+3. The local path is now configured directly in Section 2 (`DATA_PATH = 'dating_app_behavior_dataset_extended1.csv'`).
+
+### Running in Google Colab
+1. Upload the CSV files to your Google Drive under `MyDrive/Dataset/` (or upload directly to the Colab session files).
+2. If using Google Drive, mount Drive in Colab and change `DATA_PATH` in Section 2 to your Drive path:
+   ```python
+   from google.colab import drive
+   drive.mount('/content/drive')
+   DATA_PATH = '/content/drive/MyDrive/Dataset/dating_app_behavior_dataset_extended1.csv'
+   ```
+3. Run all cells top to bottom — Section 1 installs all required packages.
 
 ### Important: Education Level Encoding
 The CSV stores values like `Bachelor's` with a curly apostrophe (`\u2019`), not a straight apostrophe (`'`). Direct dictionary mapping with `str.map()` would leave these as `NaN`. We use keyword-based matching instead:
@@ -351,54 +538,16 @@ Used in all stochastic operations to ensure full reproducibility:
 - `PCA`
 - `mutual_info_classif`
 - All ML models
+- `RandomizedSearchCV`
 
----
-
-## 📊 Pipeline Summary Diagram
-
-```
-dating_app_behavior_dataset_extended1.csv  (50,000 × 25)
-        │
-        ▼
-  [EDA]  →  visualizations, distributions, correlations
-        │
-        ▼
-  [Drop] app_usage_time_label, swipe_right_label  →  50,000 × 23
-        │
-        ▼
-  [Binary Target]  match_outcome  →  target (0/1)
-        │
-        ▼
-  [Ordinal Encode]  income_bracket, education_level  →  income_enc, education_enc
-        │
-        ▼
-  [One-Hot Encode]  7 nominal columns  →  +43 binary columns
-        │
-        ▼
-  [Multi-Hot Encode]  interest_tags (49 tags)  →  +49 binary columns
-        │
-        ▼
-  [StandardScaler]  12 numeric columns  →  mean=0, std=1
-        │
-        ▼
-  Feature matrix X: (50,000 × 113)
-        │
-        ├──[ANOVA F-Score top 40]──┐
-        │                          ├──[Union]──▶  X_selected (50,000 × 67)
-        └──[Mutual Info top 40]────┘                    │
-                                                        ├──[PCA 95% var]──▶  X_pca (50,000 × 55)
-                                                        │
-                                                        ▼
-                                              [Train/Test Split 80/20 stratified]
-                                                        │
-                                    ┌───────────────────┴─────────────────────┐
-                                    ▼                                         ▼
-                             X_train (40,000 × 67)                  X_test (10,000 × 67)
-                             y_train (40,000)                        y_test (10,000)
-                             X_train_pca (40,000 × 55)               X_test_pca (10,000 × 55)
-
-                                              ↓  [NEXT STEP]
-                                          Model Training
+### XGBoost Fallback
+If `xgboost` is not installed, the notebook automatically falls back to sklearn's `GradientBoostingClassifier`:
+```python
+try:
+    from xgboost import XGBClassifier
+    HAS_XGBOOST = True
+except ImportError:
+    HAS_XGBOOST = False
 ```
 
 ---
@@ -407,9 +556,14 @@ dating_app_behavior_dataset_extended1.csv  (50,000 × 25)
 
 | Requirement | Status |
 |---|---|
-| Min 5 ML models trained | 🔲 Pending |
-| Hyperparameter tuning | 🔲 Pending |
-| Model comparison table | 🔲 Pending |
+| Min 5 ML models trained | ✅ Done (6 models) |
+| Hyperparameter tuning | ✅ Done (RandomizedSearchCV, top 3 models) |
+| Model comparison table | ✅ Done |
+| Cross-validation | ✅ Done (5-fold) |
+| Learning curves | ✅ Done (top 3 models) |
+| Feature importance | ✅ Done |
+| Confusion matrices | ✅ Done (all 6 models) |
+| ROC curves | ✅ Done (all 6 models overlaid) |
 | Auto-sklearn comparison | 🔲 Pending (Colab, Linux) |
 | EDA complete | ✅ Done |
 | Data preprocessing complete | ✅ Done |
@@ -420,6 +574,25 @@ dating_app_behavior_dataset_extended1.csv  (50,000 × 25)
 | 5-minute video recording | 🔲 Pending |
 | Group project report | 🔲 Pending |
 | Submit on SPECTRUM | 🔲 Pending (deadline: 8 June 2026) |
+
+---
+
+## 📓 Notebook Section Index
+
+| Section | Cells | Description |
+|---|---|---|
+| 1 — Install & Import | 2–4 | Libraries and plot style |
+| 2 — Data Loading | 5–7 | Load CSV, column overview |
+| 3 — EDA | 8–29 | 10 subsections of exploration and visualisation |
+| 4 — Preprocessing | 30–46 | Drop, encode, normalise |
+| 5 — Feature Selection | 47–57 | F-Score, MI, union strategy |
+| 6 — PCA | 58–64 | Variance analysis, biplot |
+| 7 — Train/Test Split | 65–67 | 80/20 stratified |
+| 8 — Pre-Training Checklist | 68 | Status summary |
+| 9 — Model Training | 69–87 | 6 models, comparison, confusion matrices, ROC, CV, learning curves |
+| 10 — Hyperparameter Tuning | 88–99 | RandomizedSearchCV, before/after comparison |
+| 11 — Feature Importance | 100–101 | Top 20 features from best tree model |
+| 12 — Final Summary | 102–105 | Comprehensive ranking, best model |
 
 ---
 
